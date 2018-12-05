@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity implements  GetEncryptionKey
     private TextView outputTextView;
     private TextView currentKeyTextView;
     private ProgressBar progressBar;
-    private int actualKey;
     private EncryptionKey encryptionKey;
+    private Random rand = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements  GetEncryptionKey
         inputEditText.setFilters(new InputFilter[]{new CharactersFilter()});
         outputTextView = findViewById(R.id.output_textview);
         currentKeyTextView = findViewById(R.id.current_key_textview);
+        encryptionKey = null;
     }
 
     private void showKeyPickerDialog(int key) {
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements  GetEncryptionKey
     }
 
     private void fetchSubstitutionCypherKey(int key) {
+        showProgressBar();
         GetEncryptionKeyTask getEncryptionKeyTask = new GetEncryptionKeyTask();
         getEncryptionKeyTask.addListener(this);
         getEncryptionKeyTask.execute(key);
@@ -94,16 +96,30 @@ public class MainActivity extends AppCompatActivity implements  GetEncryptionKey
     }
 
     public void onKeySelectButtonClicked(View view) {
-        showKeyPickerDialog(actualKey);
-
+        if (encryptionKey == null) {
+            showKeyPickerDialog(rand.nextInt(MAX_KEY_VALUE));
+        }
+        else {
+            showKeyPickerDialog(encryptionKey.getId());
+        }
     }
 
     public void onCopyButtonClicked(View view) {
     }
 
+    private void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar() {
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+
     @Override
     public void onEncryptionKeyReceive(EncryptionKey encryptionKey) {
         this.encryptionKey = encryptionKey;
-        currentKeyTextView.setText(String.format(getString(R.string.text_current_key), encryptionKey.id));
+        currentKeyTextView.setText(String.format(getString(R.string.text_current_key), encryptionKey.getId()));
+        hideProgressBar();
     }
 }
