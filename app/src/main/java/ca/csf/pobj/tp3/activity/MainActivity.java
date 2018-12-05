@@ -16,11 +16,13 @@ import android.widget.TextView;
 
 import java.util.Random;
 
+import Models.EncryptionKey;
+import Tasks.GetEncryptionKeyTask;
 import ca.csf.pobj.tp3.R;
 import ca.csf.pobj.tp3.utils.view.CharactersFilter;
 import ca.csf.pobj.tp3.utils.view.KeyPickerDialog;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements  GetEncryptionKeyTask.Listener{
 
     private static final int KEY_LENGTH = 5;
     private static final int MAX_KEY_VALUE = (int) Math.pow(10, KEY_LENGTH) - 1;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView outputTextView;
     private TextView currentKeyTextView;
     private ProgressBar progressBar;
+    private int actualKey;
+    private EncryptionKey encryptionKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchSubstitutionCypherKey(int key) {
-        //TODO
+        GetEncryptionKeyTask getEncryptionKeyTask = new GetEncryptionKeyTask();
+        getEncryptionKeyTask.addListener(this);
+        getEncryptionKeyTask.execute(key);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -81,4 +87,23 @@ public class MainActivity extends AppCompatActivity {
         clipboard.setPrimaryClip(ClipData.newPlainText(getResources().getString(R.string.clipboard_encrypted_text), text));
     }
 
+    public void onEncryptButtonClicked(View view) {
+    }
+
+    public void onDecryptButtonClicked(View view) {
+    }
+
+    public void onKeySelectButtonClicked(View view) {
+        showKeyPickerDialog(actualKey);
+
+    }
+
+    public void onCopyButtonClicked(View view) {
+    }
+
+    @Override
+    public void onEncryptionKeyReceive(EncryptionKey encryptionKey) {
+        this.encryptionKey = encryptionKey;
+        currentKeyTextView.setText(String.format(getString(R.string.text_current_key), encryptionKey.id));
+    }
 }
