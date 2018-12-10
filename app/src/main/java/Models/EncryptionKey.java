@@ -8,8 +8,6 @@ public class EncryptionKey {
     private final int id;
     private final String outputCharacters;
     private final String inputCharacters;
-    private String decrypted;
-    private  String encrypted;
 
     @JsonCreator
     public EncryptionKey(@JsonProperty("id") int id, @JsonProperty("outputCharacters") String outputCharacters, @JsonProperty("inputCharacters") String inputCharacters) {
@@ -35,15 +33,25 @@ public class EncryptionKey {
 
     public String DecryptText(String stringToDecrypt) {
 
+        StringBuilder stringToConstruct = new StringBuilder();
+        for (Character c : stringToDecrypt.toCharArray()) {
 
+            int indexOf = this.outputCharacters.indexOf(c);
+            stringToConstruct.append(this.inputCharacters.charAt(indexOf));
+        }
 
-       return decrypted;
+        return stringToConstruct.toString();
     }
 
     public String EncryptText(String stringToEncrypt) {
 
+        StringBuilder stringToDeConstruct = new StringBuilder();
+        for (Character c : stringToEncrypt.toCharArray()) {
 
+            int indexOf = this.inputCharacters.indexOf(c);
+            stringToDeConstruct.append(this.outputCharacters.charAt(indexOf));
+        }
 
-        return encrypted;
+        return stringToDeConstruct.toString();
     }
 }
