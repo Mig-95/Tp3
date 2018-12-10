@@ -22,7 +22,7 @@ import ca.csf.pobj.tp3.R;
 import ca.csf.pobj.tp3.utils.view.CharactersFilter;
 import ca.csf.pobj.tp3.utils.view.KeyPickerDialog;
 
-public class MainActivity extends AppCompatActivity implements  GetEncryptionKeyTask.Listener{
+public class MainActivity extends AppCompatActivity {
 
     private static final int KEY_LENGTH = 5;
     private static final int MAX_KEY_VALUE = (int) Math.pow(10, KEY_LENGTH) - 1;
@@ -64,11 +64,15 @@ public class MainActivity extends AppCompatActivity implements  GetEncryptionKey
         Snackbar.make(rootView, R.string.text_connectivity_error, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.text_activate_wifi, (view) -> showWifiSettings())
                 .show();
+        hideProgressBar();
+
     }
 
     private void showServerError() {
         Snackbar.make(rootView, R.string.text_server_error, Snackbar.LENGTH_INDEFINITE)
                 .show();
+        hideProgressBar();
+
     }
 
     private void showWifiSettings() {
@@ -78,9 +82,7 @@ public class MainActivity extends AppCompatActivity implements  GetEncryptionKey
 
     private void fetchSubstitutionCypherKey(int key) {
         showProgressBar();
-        GetEncryptionKeyTask getEncryptionKeyTask = new GetEncryptionKeyTask();
-        getEncryptionKeyTask.addListener(this);
-        getEncryptionKeyTask.execute(key);
+        GetEncryptionKeyTask.run(this::onEncryptionKeyReceive, this::showServerError, this::showConnectionError, key);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -90,9 +92,11 @@ public class MainActivity extends AppCompatActivity implements  GetEncryptionKey
     }
 
     public void onEncryptButtonClicked(View view) {
+
     }
 
     public void onDecryptButtonClicked(View view) {
+
     }
 
     public void onKeySelectButtonClicked(View view) {
@@ -105,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements  GetEncryptionKey
     }
 
     public void onCopyButtonClicked(View view) {
+        putTextInClipboard(outputTextView.getText().toString());
     }
 
     private void showProgressBar() {
@@ -115,8 +120,6 @@ public class MainActivity extends AppCompatActivity implements  GetEncryptionKey
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-
-    @Override
     public void onEncryptionKeyReceive(EncryptionKey encryptionKey) {
         this.encryptionKey = encryptionKey;
         currentKeyTextView.setText(String.format(getString(R.string.text_current_key), encryptionKey.getId()));

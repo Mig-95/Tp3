@@ -8,6 +8,8 @@ public class EncryptionKey {
     private final int id;
     private final String outputCharacters;
     private final String inputCharacters;
+    private String decrypted;
+    private  String encrypted;
 
     @JsonCreator
     public EncryptionKey(@JsonProperty("id") int id, @JsonProperty("outputCharacters") String outputCharacters, @JsonProperty("inputCharacters") String inputCharacters) {
@@ -29,5 +31,19 @@ public class EncryptionKey {
     @JsonProperty("inputCharacters")
     public String getInputCharacters() {
         return inputCharacters;
+    }
+
+    public String DecryptText(String stringToDecrypt) {
+
+
+
+       return decrypted;
+    }
+
+    public String EncryptText(String stringToEncrypt) {
+
+
+
+        return encrypted;
     }
 }
