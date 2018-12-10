@@ -5,9 +5,7 @@ import android.os.AsyncTask;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+import java.util.function.Consumer;
 
 import Models.EncryptionKey;
 import okhttp3.Call;
@@ -15,21 +13,28 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class GetEncryptionKeyTask extends AsyncTask<Integer, Void, EncryptionKey> {
+public class GetEncryptionKeyTask extends AsyncTask<Integer, Void, WebServiceResult<EncryptionKey>> {
 
     private static final String URL = "https://m1t2.csfpwmjv.tk/api/key/%d";
-    private List<Listener> listeners = new Vector<>();
 
-    public void addListener(Listener listener) {
-        listeners.add(listener);
+    private final Consumer<EncryptionKey> onSuccess;
+    private final Runnable onServerError;
+    private final Runnable onConnectivityError;
+
+    public static void run(Consumer<EncryptionKey> onSuccess, Runnable onServerError, Runnable onConnectivityError, Integer keyToFetch) {
+        new GetEncryptionKeyTask(onSuccess, onServerError, onConnectivityError).execute(keyToFetch);
+    }
+
+    private GetEncryptionKeyTask(Consumer<EncryptionKey> onSuccess, Runnable onServerError, Runnable onConnectivityError) {
+        this.onSuccess = onSuccess;
+        this.onServerError = onServerError;
+        this.onConnectivityError = onConnectivityError;
     }
 
     @Override
-    protected EncryptionKey doInBackground(Integer... integers) {
-        if (integers.length != 1) {
-            throw new IllegalArgumentException("You must provide a number");
-        }
-        EncryptionKey encryptionKey = new EncryptionKey(0,"","");
+    protected WebServiceResult<EncryptionKey> doInBackground(Integer... integers) {
+        if (integers.length != 1) throw new IllegalArgumentException("You must provide a number");
+
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(String.format(URL, integers[0]))
@@ -44,28 +49,29 @@ public class GetEncryptionKeyTask extends AsyncTask<Integer, Void, EncryptionKey
                 String executeBody = execute.body().string();
 
                 ObjectMapper mapper = new ObjectMapper();
-                encryptionKey = mapper.readValue(executeBody, EncryptionKey.class);
+                EncryptionKey encryptionKey = mapper.readValue(executeBody, EncryptionKey.class);
+
+                return WebServiceResult.ok(encryptionKey);
 
             } else {
-                //todo erreur de serveur. Avertir nos listeners dans "onPostExecute"
+                return WebServiceResult.connectivityError();
             }
         } catch (IOException e) {
             e.printStackTrace();
-            //todo erreur de connectivité. Avertir nos listeners dans "onPostExecute"
+            return WebServiceResult.connectivityError();
         }
-
-        return encryptionKey;
     }
 
     @Override
-    protected void onPostExecute(EncryptionKey encryptionKey) {
-        for (Listener listener: listeners) {
-            listener.onEncryptionKeyReceive(encryptionKey);
+    protected void onPostExecute(WebServiceResult<EncryptionKey> webServiceResult) {
+        if (webServiceResult.isServerError()) {
+            onServerError.run();
         }
-    }
-
-    public interface Listener {
-        void onEncryptionKeyReceive(EncryptionKey encryptionKey);
-
+        else if (webServiceResult.isConnectivityError()) {
+            onConnectivityError.run();
+        }
+        else {
+            onSuccess.accept(webServiceResult.getResult());
+        }
     }
 }
