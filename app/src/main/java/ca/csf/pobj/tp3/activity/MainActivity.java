@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onDecryptButtonClicked(View view) {
-        outputTextView.setText(encryptionKey.EncryptText(inputEditText.getText().toString()));
+        outputTextView.setText(encryptionKey.DecryptText(inputEditText.getText().toString()));
     }
 
     public void onKeySelectButtonClicked(View view) {
