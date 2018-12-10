@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(rootView, R.string.text_server_error, Snackbar.LENGTH_INDEFINITE)
                 .show();
         hideProgressBar();
-
     }
 
     private void showWifiSettings() {
@@ -92,11 +91,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEncryptButtonClicked(View view) {
-
+        outputTextView.setText(encryptionKey.EncryptText(inputEditText.getText().toString()));
     }
 
     public void onDecryptButtonClicked(View view) {
-
+        outputTextView.setText(encryptionKey.EncryptText(inputEditText.getText().toString()));
     }
 
     public void onKeySelectButtonClicked(View view) {
