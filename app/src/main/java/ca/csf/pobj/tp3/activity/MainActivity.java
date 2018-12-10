@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         inputEditText.setFilters(new InputFilter[]{new CharactersFilter()});
         outputTextView = findViewById(R.id.output_textview);
         currentKeyTextView = findViewById(R.id.current_key_textview);
-        encryptionKey = null;
+        fetchSubstitutionCypherKey(rand.nextInt(MAX_KEY_VALUE));
     }
 
     private void showKeyPickerDialog(int key) {
@@ -74,6 +74,11 @@ public class MainActivity extends AppCompatActivity {
         hideProgressBar();
     }
 
+    public void showKeyMissingError() {
+        Snackbar.make(rootView, R.string.key_not_downloaded_error, Snackbar.LENGTH_INDEFINITE)
+                .show();
+    }
+
     private void showWifiSettings() {
         Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
         startActivity(intent);
@@ -91,16 +96,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEncryptButtonClicked(View view) {
-        outputTextView.setText(encryptionKey.EncryptText(inputEditText.getText().toString()));
+        if (this.encryptionKey == null) {
+            showKeyMissingError();
+        }
+        else {
+            outputTextView.setText(encryptionKey.EncryptText(inputEditText.getText().toString()));
+        }
     }
 
     public void onDecryptButtonClicked(View view) {
-        outputTextView.setText(encryptionKey.DecryptText(inputEditText.getText().toString()));
+        if (this.encryptionKey == null) {
+            showKeyMissingError();
+        }
+        else {
+            outputTextView.setText(encryptionKey.DecryptText(inputEditText.getText().toString()));
+        }
     }
 
     public void onKeySelectButtonClicked(View view) {
         if (encryptionKey == null) {
-            showKeyPickerDialog(rand.nextInt(MAX_KEY_VALUE));
+            showKeyMissingError();
         }
         else {
             showKeyPickerDialog(encryptionKey.getId());
@@ -109,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCopyButtonClicked(View view) {
         putTextInClipboard(outputTextView.getText().toString());
+        showCopiedToClipboardMessage();
     }
 
     private void showProgressBar() {
