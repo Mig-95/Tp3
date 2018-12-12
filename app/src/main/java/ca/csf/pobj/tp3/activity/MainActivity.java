@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int KEY_LENGTH = 5;
     private static final int MAX_KEY_VALUE = (int) Math.pow(10, KEY_LENGTH) - 1;
+    private static final String ID_KEY = "ID_KEY";
+    private static final String OUTPUTCHAR_KEY = "OUTPUTCHAR_KEY";
+    private static final String INPUTCHAR_KEY = "INPUTCHAR_KEY";
 
     private View rootView;
     private EditText inputEditText;
@@ -47,6 +50,45 @@ public class MainActivity extends AppCompatActivity {
         outputTextView = findViewById(R.id.output_textview);
         currentKeyTextView = findViewById(R.id.current_key_textview);
         fetchSubstitutionCypherKey(rand.nextInt(MAX_KEY_VALUE));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ID_KEY, encryptionKey.getId());
+        outState.putString(OUTPUTCHAR_KEY, encryptionKey.getOutputCharacters());
+        outState.putString(INPUTCHAR_KEY, encryptionKey.getInputCharacters());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        encryptionKey = new EncryptionKey(savedInstanceState.getInt(ID_KEY), savedInstanceState.getString(OUTPUTCHAR_KEY), savedInstanceState.getString(INPUTCHAR_KEY));
     }
 
     private void showKeyPickerDialog(int key) {

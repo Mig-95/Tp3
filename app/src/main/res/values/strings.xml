@@ -8,7 +8,7 @@
     <string name="text_current_key">Key : %05d</string>
     <string name="text_copy">Copy</string>
 
-    <string name="text_connectivity_error">You are not connected to the internet.</string>
+    <string name="text_connectivity_error">No connection to the internet.</string>
     <string name="text_server_error">Server is in maintenance. Please try again later.</string>
     <string name="text_copied_output">Copied!</string>
 
@@ -16,5 +16,5 @@
 
     <string name="clipboard_encrypted_text">Encrypted text</string>
 
-    <string name="key_not_downloaded_error">You must initialize the key first</string>
+    <string name="key_not_downloaded_error">Key must be initialize first</string>
 </resources>
