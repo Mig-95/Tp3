@@ -49,32 +49,14 @@ public class MainActivity extends AppCompatActivity {
         inputEditText.setFilters(new InputFilter[]{new CharactersFilter()});
         outputTextView = findViewById(R.id.output_textview);
         currentKeyTextView = findViewById(R.id.current_key_textview);
-        fetchSubstitutionCypherKey(rand.nextInt(MAX_KEY_VALUE));
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        if (encryptionKey == null) {
+            fetchSubstitutionCypherKey(rand.nextInt(MAX_KEY_VALUE));
+        }
     }
 
     @Override
