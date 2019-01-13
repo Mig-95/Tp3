@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView currentKeyTextView;
     private ProgressBar progressBar;
     private EncryptionKey encryptionKey;
-    private Random rand = new Random();
+    private Random rand = new Random(); //BEN_CORRECTION : Éviter les abbréviations de noms de variables.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onKeySelectButtonClicked(View view) {
+        //BEN_CORRECTION : Erreur de logique. Si on clique sur ce bouton, c'est pour sélectionner
+        //                 une clé justement.
         if (encryptionKey == null) {
             showKeyMissingError();
         }
@@ -159,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
+    //BEN_CORRECTION : Fonction devrait être private.
     public void onEncryptionKeyReceive(EncryptionKey encryptionKey) {
         this.encryptionKey = encryptionKey;
         currentKeyTextView.setText(String.format(getString(R.string.text_current_key), encryptionKey.getId()));

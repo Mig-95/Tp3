@@ -1,3 +1,6 @@
+//BEN_CORRECTION : Non respect des standards Java de nommage des packages.
+//                 De plus, il faut lui ajouter le préfix d'application, soit "ca.csf.pobj.tp3" dans
+//                 votre cas.
 package Tasks;
 
 import android.os.AsyncTask;
@@ -21,6 +24,7 @@ public class GetEncryptionKeyTask extends AsyncTask<Integer, Void, WebServiceRes
     private final Runnable onServerError;
     private final Runnable onConnectivityError;
 
+    //BEN_REVIEW : Pour plus de lisibilité, mettre les paramètres de cette fonction sur plusieurs lignes.
     public static void run(Consumer<EncryptionKey> onSuccess, Runnable onServerError, Runnable onConnectivityError, Integer keyToFetch) {
         new GetEncryptionKeyTask(onSuccess, onServerError, onConnectivityError).execute(keyToFetch);
     }
@@ -33,7 +37,7 @@ public class GetEncryptionKeyTask extends AsyncTask<Integer, Void, WebServiceRes
 
     @Override
     protected WebServiceResult<EncryptionKey> doInBackground(Integer... integers) {
-        if (integers.length != 1) throw new IllegalArgumentException("You must provide a number");
+        if (integers.length != 1) throw new IllegalArgumentException("You must provide a number"); //BEN_REVIEW : Message d'erreur imprécis.
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

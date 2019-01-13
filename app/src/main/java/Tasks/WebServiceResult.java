@@ -1,4 +1,9 @@
+//BEN_CORRECTION : Non respect des standards Java de nommage des packages.
+//                 De plus, il faut lui ajouter le préfix d'application, soit "ca.csf.pobj.tp3" dans
+//                 votre cas.
 package Tasks;
+
+//BEN_REVIEW : J'ai ignoré ce fichier, car ceci est mon code.
 
 public class WebServiceResult<T> {
 
